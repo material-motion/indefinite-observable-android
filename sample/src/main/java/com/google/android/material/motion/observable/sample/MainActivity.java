@@ -15,16 +15,23 @@
  */
 package com.google.android.material.motion.observable.sample;
 
-import com.google.android.material.motion.observable.Library;
-
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
+
+import com.google.android.material.motion.observable.IndefiniteObservable;
+import com.google.android.material.motion.observable.IndefiniteObservable.ValueObserver;
+import com.google.android.material.motion.observable.IndefiniteObservable.Subscriber;
+import com.google.android.material.motion.observable.IndefiniteObservable.Subscription;
+import com.google.android.material.motion.observable.IndefiniteObservable.Unsubscriber;
 
 /**
  * Observable implementation for Android sample Activity.
  */
 public class MainActivity extends AppCompatActivity {
+
+  private TextView text;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +39,29 @@ public class MainActivity extends AppCompatActivity {
 
     setContentView(R.layout.main_activity);
 
-    TextView text = (TextView) findViewById(R.id.text);
-    text.setText(Library.LIBRARY_NAME);
+    text = (TextView) findViewById(R.id.text);
+
+    runDemo1();
+  }
+
+  private void runDemo1() {
+    IndefiniteObservable<String> observable = new IndefiniteObservable<>(
+      new Subscriber<String>() {
+        @Nullable
+        @Override
+        public Unsubscriber subscribe(ValueObserver<String> observer) {
+          observer.next("Payload");
+          return null;
+        }
+      });
+
+    Subscription subscription = observable.subscribe(new ValueObserver<String>() {
+      @Override
+      public void next(String value) {
+        text.setText(value);
+      }
+    });
+
+    subscription.unsubscribe();
   }
 }
