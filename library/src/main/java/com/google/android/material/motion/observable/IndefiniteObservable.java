@@ -17,8 +17,6 @@ package com.google.android.material.motion.observable;
 
 import android.support.annotation.Nullable;
 
-import com.google.android.material.motion.observable.IndefiniteObservable.Observer;
-
 /**
  * An IndefiniteObservable represents a sequence of values that may be observed.
  * <p>
@@ -138,24 +136,6 @@ public class IndefiniteObservable<O extends Observer<?>> {
      * Tears down the source of the stream.
      */
     void unsubscribe();
-  }
-
-  /**
-   * An observer receives new values from upstream and forwards them to downstream.
-   * <p>
-   * Upstream forwards new values to downstream by invoking {@link #next(Object)} when they are
-   * produced. Implementations can have additional methods that can forward other values.
-   * <p>
-   * See the class javadoc of {@link IndefiniteObservable} for an example implementation.
-   *
-   * @param <T> The type of value passed through the default {@link #next(Object)} method.
-   */
-  public interface Observer<T> {
-
-    /**
-     * The default method that handles new values from upstream.
-     */
-    void next(T value);
   }
 
   /**

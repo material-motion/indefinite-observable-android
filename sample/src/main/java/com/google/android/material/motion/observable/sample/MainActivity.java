@@ -22,7 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.google.android.material.motion.observable.IndefiniteObservable;
-import com.google.android.material.motion.observable.IndefiniteObservable.Observer;
+import com.google.android.material.motion.observable.Observer;
 import com.google.android.material.motion.observable.IndefiniteObservable.Subscriber;
 import com.google.android.material.motion.observable.IndefiniteObservable.Subscription;
 import com.google.android.material.motion.observable.IndefiniteObservable.Unsubscriber;
