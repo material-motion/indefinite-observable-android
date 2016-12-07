@@ -15,13 +15,14 @@
  */
 package com.google.android.material.motion.observable.sample;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.google.android.material.motion.observable.IndefiniteObservable;
-import com.google.android.material.motion.observable.IndefiniteObservable.ValueObserver;
+import com.google.android.material.motion.observable.IndefiniteObservable.Observer;
 import com.google.android.material.motion.observable.IndefiniteObservable.Subscriber;
 import com.google.android.material.motion.observable.IndefiniteObservable.Subscription;
 import com.google.android.material.motion.observable.IndefiniteObservable.Unsubscriber;
@@ -31,7 +32,8 @@ import com.google.android.material.motion.observable.IndefiniteObservable.Unsubs
  */
 public class MainActivity extends AppCompatActivity {
 
-  private TextView text;
+  private TextView text1;
+  private TextView text2;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -39,29 +41,68 @@ public class MainActivity extends AppCompatActivity {
 
     setContentView(R.layout.main_activity);
 
-    text = (TextView) findViewById(R.id.text);
+    text1 = (TextView) findViewById(R.id.text1);
+    text2 = (TextView) findViewById(R.id.text2);
 
     runDemo1();
+    runDemo2();
   }
 
   private void runDemo1() {
-    IndefiniteObservable<String> observable = new IndefiniteObservable<>(
-      new Subscriber<String>() {
+    IndefiniteObservable<Observer<String>> observable = new IndefiniteObservable<>(
+      new Subscriber<Observer<String>>() {
         @Nullable
         @Override
-        public Unsubscriber subscribe(ValueObserver<String> observer) {
-          observer.next("Payload");
+        public Unsubscriber subscribe(Observer<String> observer) {
+          observer.next("foo");
           return null;
         }
       });
 
-    Subscription subscription = observable.subscribe(new ValueObserver<String>() {
+    Subscription subscription = observable.subscribe(new Observer<String>() {
       @Override
       public void next(String value) {
-        text.setText(value);
+        text1.setText(value);
       }
     });
 
     subscription.unsubscribe();
+  }
+
+  private void runDemo2() {
+    IndefiniteObservable<MultiChannelObserver<String, Integer>> observable = new IndefiniteObservable<>(
+      new Subscriber<MultiChannelObserver<String, Integer>>() {
+        @Nullable
+        @Override
+        public Unsubscriber subscribe(MultiChannelObserver<String, Integer> observer) {
+          observer.next("bar");
+          observer.customChannel(Color.RED);
+          return null;
+        }
+      });
+
+    Subscription subscription = observable.subscribe(new MultiChannelObserver<String, Integer>() {
+      @Override
+      public void next(String value) {
+        text2.setText(value);
+      }
+
+      @Override
+      public void customChannel(Integer value) {
+        text2.setTextColor(value);
+      }
+    });
+
+    subscription.unsubscribe();
+  }
+
+  /**
+   * A multi-channel observer implementation.
+   */
+  public interface MultiChannelObserver<T, U> extends Observer<T> {
+
+    void next(T value);
+
+    void customChannel(U value);
   }
 }
