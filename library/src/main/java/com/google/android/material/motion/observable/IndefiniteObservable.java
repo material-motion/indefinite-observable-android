@@ -15,6 +15,7 @@
  */
 package com.google.android.material.motion.observable;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 /**
@@ -23,6 +24,8 @@ import android.support.annotation.Nullable;
  * IndefiniteObservable is meant for use with streams of values that have no concept of completion.
  * This is an implementation of a subset of the Observable interface defined at
  * http://reactivex.io/
+ * <p>
+ * Streams are not evaluated until {@link #subscribe(Observer)} or {@link #subscribe()} is invoked.
  * <p>
  * Simple stream that synchronously dispatches "10", "11", "12":
  * <pre>
@@ -99,7 +102,7 @@ public class IndefiniteObservable<O extends Observer<?>> {
    * @param observer The observer on which channel methods are called when new values are
    * produced.
    */
-  public Subscription subscribe(O observer) {
+  public Subscription subscribe(@NonNull O observer) {
     return new Subscription(subscriber.subscribe(observer));
   }
 
