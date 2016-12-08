@@ -15,23 +15,20 @@
  */
 package com.google.android.material.motion.observable;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
+/**
+ * An observer receives new values from upstream and forwards them to downstream.
+ * <p>
+ * Upstream forwards new values to downstream by invoking {@link #next(Object)} when they are
+ * produced. Implementations can have additional methods that can forward other values.
+ * <p>
+ * See the class javadoc of {@link IndefiniteObservable} for an example implementation.
+ *
+ * @param <T> The type of value passed through the default {@link #next(Object)} method.
+ */
+public abstract class Observer<T> {
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
-public class UnitTests {
-
-  @Before
-  public void setUp() {
-
-  }
-
-  @Test
-  public void unitTest() {
-
-  }
+  /**
+   * The default method that handles new values from upstream.
+   */
+  public abstract void next(T value);
 }

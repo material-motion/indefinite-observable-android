@@ -15,9 +15,8 @@
  */
 package com.google.android.material.motion.observable;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import com.google.android.material.motion.observable.IndefiniteObservable.Observer;
 
 /**
  * An IndefiniteObservable represents a sequence of values that may be observed.
@@ -25,6 +24,8 @@ import com.google.android.material.motion.observable.IndefiniteObservable.Observ
  * IndefiniteObservable is meant for use with streams of values that have no concept of completion.
  * This is an implementation of a subset of the Observable interface defined at
  * http://reactivex.io/
+ * <p>
+ * Streams are not evaluated until {@link #subscribe(Observer)} or {@link #subscribe()} is invoked.
  * <p>
  * Simple stream that synchronously dispatches "10", "11", "12":
  * <pre>
@@ -101,7 +102,7 @@ public class IndefiniteObservable<O extends Observer<?>> {
    * @param observer The observer on which channel methods are called when new values are
    * produced.
    */
-  public Subscription subscribe(O observer) {
+  public Subscription subscribe(@NonNull O observer) {
     return new Subscription(subscriber.subscribe(observer));
   }
 
@@ -113,14 +114,14 @@ public class IndefiniteObservable<O extends Observer<?>> {
    * <p>
    * See the class javadoc of {@link IndefiniteObservable} for an example implementation.
    */
-  public interface Subscriber<O extends Observer<?>> {
+  public static abstract class Subscriber<O extends Observer<?>> {
 
     /**
      * Connects an observer to an event source by calling {@link Observer#next(Object)} or
      * another appropriate method when new values are received.
      */
     @Nullable
-    Unsubscriber subscribe(O observer);
+    public abstract Unsubscriber subscribe(O observer);
   }
 
   /**
@@ -132,30 +133,12 @@ public class IndefiniteObservable<O extends Observer<?>> {
    * <p>
    * See the class javadoc of {@link IndefiniteObservable} for an example implementation.
    */
-  public interface Unsubscriber {
+  public static abstract class Unsubscriber {
 
     /**
      * Tears down the source of the stream.
      */
-    void unsubscribe();
-  }
-
-  /**
-   * An observer receives new values from upstream and forwards them to downstream.
-   * <p>
-   * Upstream forwards new values to downstream by invoking {@link #next(Object)} when they are
-   * produced. Implementations can have additional methods that can forward other values.
-   * <p>
-   * See the class javadoc of {@link IndefiniteObservable} for an example implementation.
-   *
-   * @param <T> The type of value passed through the default {@link #next(Object)} method.
-   */
-  public interface Observer<T> {
-
-    /**
-     * The default method that handles new values from upstream.
-     */
-    void next(T value);
+    public abstract void unsubscribe();
   }
 
   /**
