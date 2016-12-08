@@ -86,14 +86,86 @@ To run all unit tests, run the following commands:
     cd indefinite-observable-android
     gradle test
 
-## Guides
+# Guides
 
-1. [Architecture](#architecture)
-2. [How to ...](#how-to-...)
+1. [How to create a synchronous stream](#how-to-create-a-synchronous-stream)
+1. [How to create an asynchronous stream using blocks](#how-to-create-an-asynchronous-stream-using-blocks)
+1. [How to subscribe to a stream](#how-to-subscribe-to-a-stream)
+1. [How to unsubscribe from a stream](#how-to-unsubscribe-from-a-stream)
+1. [How to create an synchronous stream using objects](#how-to-create-an-synchronous-stream-using-objects)
+1. [How to make a custom observable](#how-to-create-a-custom-observable)
 
-### Architecture
+## How to create a synchronous stream
 
-### How to ...
+```java
+IndefiniteObservable<Observer<Integer>> observable = new IndefiniteObservable<>(
+  new Subscriber<Observer<Integer>>() {
+    @Nullable
+    @Override
+    public Unsubscriber subscribe(Observer<Integer> observer) {
+      observer.next(5);
+      return null;
+    }
+  });
+}
+```
+
+## How to create an asynchronous stream using blocks
+
+If you have an API that provides a callback-based mechanism for registering listeners then you can
+create an asynchronous stream in place like so:
+
+```java
+IndefiniteObservable<Observer<Integer>> observable = new IndefiniteObservable<>(
+  new Subscriber<Observer<Integer>>() {
+   public Unsubscriber subscribe(Observer<Integer> observer) {
+     final SomeToken token = registerSomeCallback(new SomeCallback() {
+       public void onCallbackValue(Integer value) {
+         observer.next(value);
+       }
+     });
+
+     return new Unsubscriber() {
+       public void unsubscribe() {
+         unregisterSomeCallback(token);
+       }
+     };
+   }
+  });
+```
+
+## How to subscribe to a stream
+
+```java
+Subscription subscription = observable.subscribe(new Observer<Integer>() {
+  public void next(Integer value) {
+   Log.d(TAG, "Received value: " + value);
+  }
+});
+```
+
+## How to unsubscribe from a stream
+
+```java
+subscription.unsubscribe();
+```
+
+## How to make a custom observable
+
+To create an observable that supports custom channels, extend Observer and IndefiniteObservable.
+
+```java
+public abstract class CustomObserver<T> extends Observer<T> {
+  public abstract void next(T value);
+  public abstract void customChannel(Foobar value);
+}
+
+public class CustomObservable<T> extends IndefiniteObservable<CustomObserver<T>> {
+  public CustomObservable(Subscriber<CustomObserver<T>> subscriber) {
+    super(subscriber);
+  }
+}
+```
 
 ## Contributing
 
