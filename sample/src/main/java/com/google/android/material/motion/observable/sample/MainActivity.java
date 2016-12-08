@@ -22,10 +22,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.google.android.material.motion.observable.IndefiniteObservable;
-import com.google.android.material.motion.observable.Observer;
 import com.google.android.material.motion.observable.IndefiniteObservable.Subscriber;
 import com.google.android.material.motion.observable.IndefiniteObservable.Subscription;
 import com.google.android.material.motion.observable.IndefiniteObservable.Unsubscriber;
+import com.google.android.material.motion.observable.Observer;
 
 /**
  * Observable implementation for Android sample Activity.
@@ -99,10 +99,10 @@ public class MainActivity extends AppCompatActivity {
   /**
    * A multi-channel observer implementation.
    */
-  public interface MultiChannelObserver<T, U> extends Observer<T> {
+  public static abstract class MultiChannelObserver<T, U> extends Observer<T> {
 
-    void next(T value);
+    public abstract void next(T value);
 
-    void customChannel(U value);
+    public abstract void customChannel(U value);
   }
 }

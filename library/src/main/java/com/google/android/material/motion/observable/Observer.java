@@ -25,10 +25,10 @@ package com.google.android.material.motion.observable;
  *
  * @param <T> The type of value passed through the default {@link #next(Object)} method.
  */
-public interface Observer<T> {
+public abstract class Observer<T> {
 
   /**
    * The default method that handles new values from upstream.
    */
-  void next(T value);
+  public abstract void next(T value);
 }
