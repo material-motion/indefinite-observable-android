@@ -111,14 +111,14 @@ public class IndefiniteObservable<O extends Observer<?>> {
    * <p>
    * See the class javadoc of {@link IndefiniteObservable} for an example implementation.
    */
-  public interface Subscriber<O extends Observer<?>> {
+  public static abstract class Subscriber<O extends Observer<?>> {
 
     /**
      * Connects an observer to an event source by calling {@link Observer#next(Object)} or
      * another appropriate method when new values are received.
      */
     @Nullable
-    Unsubscriber subscribe(O observer);
+    public abstract Unsubscriber subscribe(O observer);
   }
 
   /**
@@ -130,12 +130,12 @@ public class IndefiniteObservable<O extends Observer<?>> {
    * <p>
    * See the class javadoc of {@link IndefiniteObservable} for an example implementation.
    */
-  public interface Unsubscriber {
+  public static abstract class Unsubscriber {
 
     /**
      * Tears down the source of the stream.
      */
-    void unsubscribe();
+    public abstract void unsubscribe();
   }
 
   /**
