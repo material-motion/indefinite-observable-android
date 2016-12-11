@@ -47,13 +47,13 @@ public class IndefiniteObservableTests {
   }
 
   @Test
-  public void unsubscriberCanBeNull() {
+  public void disconnectorCanBeNull() {
     Subscription subscription = new IndefiniteObservable<>(
-      new IndefiniteObservable.Subscriber<Observer<?>>() {
+      new IndefiniteObservable.Connector<Observer<?>>() {
         @Nullable
         @Override
-        public IndefiniteObservable.Unsubscriber subscribe(Observer<?> observer) {
-          return null; // Null unsubscriber.
+        public IndefiniteObservable.Disconnector connect(Observer<?> observer) {
+          return null; // Null disconnector.
         }
       }).subscribe(new Observer<Object>() {
       @Override
@@ -64,6 +64,26 @@ public class IndefiniteObservableTests {
     subscription.unsubscribe(); // Should not crash.
   }
 
+  @Test
+  public void deprecatedSubscriberAndUnsubscriber() {
+    new IndefiniteObservable<>(new IndefiniteObservable.Subscriber<Observer<?>>() {
+      @Nullable
+      @Override
+      public IndefiniteObservable.Disconnector subscribe(Observer<?> observer) {
+        return new IndefiniteObservable.Unsubscriber() {
+          @Nullable
+          @Override
+          public void unsubscribe() {
+          }
+        };
+      }
+    }).subscribe(new Observer<Object>() {
+      @Override
+      public void next(Object value) {
+      }
+    }).unsubscribe();
+  }
+
   private static class Source<T> {
 
     public T value;
@@ -71,16 +91,16 @@ public class IndefiniteObservableTests {
 
     public IndefiniteObservable<Observer<T>> getObservable() {
       return new IndefiniteObservable<>(
-        new IndefiniteObservable.Subscriber<Observer<T>>() {
+        new IndefiniteObservable.Connector<Observer<T>>() {
 
           @Nullable
           @Override
-          public IndefiniteObservable.Unsubscriber subscribe(Observer<T> observer) {
+          public IndefiniteObservable.Disconnector connect(Observer<T> observer) {
             Source.this.observer = observer;
 
-            return new IndefiniteObservable.Unsubscriber() {
+            return new IndefiniteObservable.Disconnector() {
               @Override
-              public void unsubscribe() {
+              public void disconnect() {
                 Source.this.observer = null;
               }
             };

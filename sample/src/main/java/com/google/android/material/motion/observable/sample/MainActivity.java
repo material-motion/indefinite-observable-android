@@ -22,9 +22,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.google.android.material.motion.observable.IndefiniteObservable;
-import com.google.android.material.motion.observable.IndefiniteObservable.Subscriber;
+import com.google.android.material.motion.observable.IndefiniteObservable.Connector;
 import com.google.android.material.motion.observable.IndefiniteObservable.Subscription;
-import com.google.android.material.motion.observable.IndefiniteObservable.Unsubscriber;
+import com.google.android.material.motion.observable.IndefiniteObservable.Disconnector;
 import com.google.android.material.motion.observable.Observer;
 
 /**
@@ -50,10 +50,10 @@ public class MainActivity extends AppCompatActivity {
 
   private void runDemo1() {
     IndefiniteObservable<Observer<String>> observable = new IndefiniteObservable<>(
-      new Subscriber<Observer<String>>() {
+      new Connector<Observer<String>>() {
         @Nullable
         @Override
-        public Unsubscriber subscribe(Observer<String> observer) {
+        public Disconnector connect(Observer<String> observer) {
           observer.next("foo");
           return null;
         }
@@ -71,10 +71,10 @@ public class MainActivity extends AppCompatActivity {
 
   private void runDemo2() {
     IndefiniteObservable<MultiChannelObserver<String, Integer>> observable = new IndefiniteObservable<>(
-      new Subscriber<MultiChannelObserver<String, Integer>>() {
+      new Connector<MultiChannelObserver<String, Integer>>() {
         @Nullable
         @Override
-        public Unsubscriber subscribe(MultiChannelObserver<String, Integer> observer) {
+        public Disconnector connect(MultiChannelObserver<String, Integer> observer) {
           observer.next("bar");
           observer.customChannel(Color.RED);
           return null;

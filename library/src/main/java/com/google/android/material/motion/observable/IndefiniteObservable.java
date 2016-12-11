@@ -25,14 +25,14 @@ import android.support.annotation.Nullable;
  * This is an implementation of a subset of the Observable interface defined at
  * http://reactivex.io/
  * <p>
- * Streams are not evaluated until {@link #subscribe(Observer)} or {@link #subscribe()} is invoked.
+ * Streams are not evaluated until {@link #subscribe(Observer)} is invoked.
  * <p>
  * Simple stream that synchronously dispatches "10", "11", "12":
  * <pre>
  * {@code
  * IndefiniteObservable<Observer<String>> observable = new IndefiniteObservable<>(
- *      new Subscriber<Observer<String>>() {
- *        public Unsubscriber subscribe(Observer<String> observer) {
+ *      new Connector<Observer<String>>() {
+ *        public Disconnector connect(Observer<String> observer) {
  *          observer.next("10");
  *          observer.next("11");
  *          observer.next("12");
@@ -53,16 +53,16 @@ import android.support.annotation.Nullable;
  * <pre>
  * {@code
  * IndefiniteObservable<Observer<Integer>> observable = new IndefiniteObservable<>(
- *      new Subscriber<Observer<Integer>>() {
- *        public Unsubscriber subscribe(Observer<Integer> observer) {
+ *      new Connector<Observer<Integer>>() {
+ *        public Disconnector connect(Observer<Integer> observer) {
  *          final SomeToken token = registerSomeCallback(new SomeCallback() {
  *            public void onCallbackValue(Integer value) {
  *              observer.next(value);
  *            }
  *          });
  *
- *          return new Unsubscriber() {
- *            public void unsubscribe() {
+ *          return new Disconnector() {
+ *            public void disconnect() {
  *              unregisterSomeCallback(token);
  *            }
  *          };
@@ -76,19 +76,19 @@ import android.support.annotation.Nullable;
  */
 public class IndefiniteObservable<O extends Observer<?>> {
 
-  private final Subscriber<O> subscriber;
+  private final Connector<O> connector;
 
   /**
-   * Creates a new IndefiniteObservable with the given subscriber.
+   * Creates a new IndefiniteObservable with the given connector.
    * <p>
-   * Accepts a subscriber that connects an observer to an external event source via {@link
-   * Subscriber#subscribe(Observer)}.
+   * Accepts a connector that connects an observer to an external event source via {@link
+   * Connector#connect(Observer)}.
    * <p>
-   * {@link Subscriber#subscribe(Observer)} is only invoked when {@link #subscribe(Observer)} is
+   * {@link Connector#connect(Observer)} is only invoked when {@link #subscribe(Observer)} is
    * called.
    */
-  public IndefiniteObservable(Subscriber<O> subscriber) {
-    this.subscriber = subscriber;
+  public IndefiniteObservable(Connector<O> connector) {
+    this.connector = connector;
   }
 
   /**
@@ -103,42 +103,77 @@ public class IndefiniteObservable<O extends Observer<?>> {
    * produced.
    */
   public Subscription subscribe(@NonNull O observer) {
-    return new Subscription(subscriber.subscribe(observer));
+    return new Subscription(connector.connect(observer));
   }
 
   /**
-   * A subscriber provides the source of the stream.
+   * A connector provides the source of the stream by connecting an observer to an external event
+   * source.
    * <p>
-   * When new values are produced, the subscriber should call {@link Observer#next(Object)} or
-   * another appropriate method to send them downstream.
+   * When new values are produced by the external event source, the connector should call {@link
+   * Observer#next(Object)} or another appropriate method to send them downstream.
    * <p>
    * See the class javadoc of {@link IndefiniteObservable} for an example implementation.
    */
-  public static abstract class Subscriber<O extends Observer<?>> {
+  public static abstract class Connector<O extends Observer<?>> {
 
     /**
-     * Connects an observer to an event source by calling {@link Observer#next(Object)} or
-     * another appropriate method when new values are received.
+     * Connects the observer to an external event source. Ensures that {@link
+     * Observer#next(Object)} and other appropriate methods are invoked when new values are
+     * produced.
+     *
+     * @return A disconnector that disconnects the observer from the external event source.
      */
     @Nullable
-    public abstract Unsubscriber subscribe(O observer);
+    public abstract Disconnector connect(O observer);
   }
 
   /**
-   * An unsubscriber tears down the source of the stream and releases any references made in
-   * {@link Subscriber#subscribe(Observer)}.
+   * A disconnector tears down the source of the stream by disconnecting the observer from the
+   * external event source.
    * <p>
    * {@link Observer#next(Object)} and all other methods should no longer be called after {@link
-   * #unsubscribe()} is invoked.
+   * #disconnect()} is invoked.
    * <p>
    * See the class javadoc of {@link IndefiniteObservable} for an example implementation.
    */
-  public static abstract class Unsubscriber {
+  public static abstract class Disconnector {
 
     /**
-     * Tears down the source of the stream.
+     * Disconnects the observer from the external event source.
      */
+    public abstract void disconnect();
+  }
+
+  /**
+   * @deprecated in #develop#. Use {@link Connector} instead.
+   */
+  @Deprecated
+  public static abstract class Subscriber<O extends Observer<?>> extends Connector<O> {
+
+    @Nullable
+    public abstract Disconnector subscribe(O observer);
+
+    @Nullable
+    @Override
+    public final Disconnector connect(O observer) {
+      return subscribe(observer);
+    }
+  }
+
+  /**
+   * @deprecated in #develop#. Use {@link Disconnector} instead.
+   */
+  @Deprecated
+  public static abstract class Unsubscriber extends Disconnector {
+
+    @Nullable
     public abstract void unsubscribe();
+
+    @Override
+    public final void disconnect() {
+      unsubscribe();
+    }
   }
 
   /**
@@ -148,19 +183,19 @@ public class IndefiniteObservable<O extends Observer<?>> {
   public static final class Subscription {
 
     @Nullable
-    private Unsubscriber unsubscriber;
+    private Disconnector disconnector;
 
-    private Subscription(@Nullable Unsubscriber unsubscriber) {
-      this.unsubscriber = unsubscriber;
+    private Subscription(@Nullable Disconnector disconnector) {
+      this.disconnector = disconnector;
     }
 
     /**
      * Unsubscribes from the stream.
      */
     public void unsubscribe() {
-      if (unsubscriber != null) {
-        unsubscriber.unsubscribe();
-        unsubscriber = null;
+      if (disconnector != null) {
+        disconnector.disconnect();
+        disconnector = null;
       }
     }
   }

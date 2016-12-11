@@ -89,7 +89,7 @@ To run all unit tests, run the following commands:
 # Guides
 
 1. [How to create a synchronous stream](#how-to-create-a-synchronous-stream)
-1. [How to create an asynchronous stream using blocks](#how-to-create-an-asynchronous-stream-using-blocks)
+1. [How to create an asynchronous stream using callbacks](#how-to-create-an-asynchronous-stream-using-callbacks)
 1. [How to subscribe to a stream](#how-to-subscribe-to-a-stream)
 1. [How to unsubscribe from a stream](#how-to-unsubscribe-from-a-stream)
 1. [How to create an synchronous stream using objects](#how-to-create-an-synchronous-stream-using-objects)
@@ -99,10 +99,10 @@ To run all unit tests, run the following commands:
 
 ```java
 IndefiniteObservable<Observer<Integer>> observable = new IndefiniteObservable<>(
-  new Subscriber<Observer<Integer>>() {
+  new Connector<Observer<Integer>>() {
     @Nullable
     @Override
-    public Unsubscriber subscribe(Observer<Integer> observer) {
+    public Disconnector connect(Observer<Integer> observer) {
       observer.next(5);
       return null;
     }
@@ -110,23 +110,23 @@ IndefiniteObservable<Observer<Integer>> observable = new IndefiniteObservable<>(
 }
 ```
 
-## How to create an asynchronous stream using blocks
+## How to create an asynchronous stream using callbacks
 
 If you have an API that provides a callback-based mechanism for registering listeners then you can
-create an asynchronous stream in place like so:
+create an asynchronous stream like so:
 
 ```java
 IndefiniteObservable<Observer<Integer>> observable = new IndefiniteObservable<>(
-  new Subscriber<Observer<Integer>>() {
-   public Unsubscriber subscribe(Observer<Integer> observer) {
+  new Connector<Observer<Integer>>() {
+   public Disconnector connect(Observer<Integer> observer) {
      final SomeToken token = registerSomeCallback(new SomeCallback() {
        public void onCallbackValue(Integer value) {
          observer.next(value);
        }
      });
 
-     return new Unsubscriber() {
-       public void unsubscribe() {
+     return new Disconnector() {
+       public void disconnect() {
          unregisterSomeCallback(token);
        }
      };
@@ -161,8 +161,8 @@ public abstract class CustomObserver<T> extends Observer<T> {
 }
 
 public class CustomObservable<T> extends IndefiniteObservable<CustomObserver<T>> {
-  public CustomObservable(Subscriber<CustomObserver<T>> subscriber) {
-    super(subscriber);
+  public CustomObservable(Connector<CustomObserver<T>> connector) {
+    super(connector);
   }
 }
 ```
