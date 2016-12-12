@@ -53,7 +53,7 @@ public class IndefiniteObservableTests {
         @Nullable
         @Override
         public IndefiniteObservable.Disconnector connect(Observer<?> observer) {
-          return null; // Null disconnector.
+          return IndefiniteObservable.Disconnector.NO_OP;
         }
       }).subscribe(new Observer<Object>() {
       @Override

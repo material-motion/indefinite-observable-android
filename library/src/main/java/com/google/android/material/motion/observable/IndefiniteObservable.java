@@ -124,7 +124,7 @@ public class IndefiniteObservable<O extends Observer<?>> {
      *
      * @return A disconnector that disconnects the observer from the external event source.
      */
-    @Nullable
+    @NonNull
     public abstract Disconnector connect(O observer);
   }
 
@@ -138,6 +138,15 @@ public class IndefiniteObservable<O extends Observer<?>> {
    * See the class javadoc of {@link IndefiniteObservable} for an example implementation.
    */
   public static abstract class Disconnector {
+
+    /**
+     * A disconnector that does nothing.
+     */
+    public static final Disconnector NO_OP = new Disconnector() {
+      @Override
+      public void disconnect() {
+      }
+    };
 
     /**
      * Disconnects the observer from the external event source.
@@ -185,7 +194,7 @@ public class IndefiniteObservable<O extends Observer<?>> {
     @Nullable
     private Disconnector disconnector;
 
-    private Subscription(@Nullable Disconnector disconnector) {
+    private Subscription(@NonNull Disconnector disconnector) {
       this.disconnector = disconnector;
     }
 

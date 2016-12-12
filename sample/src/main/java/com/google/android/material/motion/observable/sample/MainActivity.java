@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Disconnector connect(Observer<String> observer) {
           observer.next("foo");
-          return null;
+          return Disconnector.NO_OP;
         }
       });
 
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         public Disconnector connect(MultiChannelObserver<String, Integer> observer) {
           observer.next("bar");
           observer.customChannel(Color.RED);
-          return null;
+          return Disconnector.NO_OP;
         }
       });
 
