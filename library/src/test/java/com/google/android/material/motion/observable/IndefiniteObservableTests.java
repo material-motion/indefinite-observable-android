@@ -84,6 +84,18 @@ public class IndefiniteObservableTests {
     }).unsubscribe();
   }
 
+  @Test
+  public void canUnsubscribeTwice() {
+    Subscription subscription = new Source<>().getObservable().subscribe(new Observer<Object>() {
+      @Override
+      public void next(Object value) {
+      }
+    });
+
+    subscription.unsubscribe();
+    subscription.unsubscribe();
+  }
+
   private static class Source<T> {
 
     public T value;
