@@ -18,6 +18,7 @@ package com.google.android.material.motion.observable;
 import android.support.annotation.Nullable;
 
 import com.google.android.material.motion.observable.IndefiniteObservable.Subscription;
+import com.google.android.material.motion.observable.testing.SimulatedSource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,18 +33,15 @@ public class IndefiniteObservableTests {
 
   @Test
   public void passesCorrectInteger() {
-    Source<Integer> source = new Source<>();
+    SimulatedSource<Integer, Observer<Integer>> source = new SimulatedSource<>();
 
     Subscription assertion = assertThatNextValuesWillBeEqualTo(source, 5);
-
-    source.value = 5;
-    source.next(); // Assert 5 == 5.
-
+    source.next(5); // Assert 5 == 5.
     assertion.unsubscribe();
-    assertThatNextValuesWillBeEqualTo(source, 6);
 
-    source.value = 6;
-    source.next(); // Assert 6 == 5.
+    assertion = assertThatNextValuesWillBeEqualTo(source, 6);
+    source.next(6); // Assert 6 == 5.
+    assertion.unsubscribe();
   }
 
   @Test
@@ -86,7 +84,7 @@ public class IndefiniteObservableTests {
 
   @Test
   public void canUnsubscribeTwice() {
-    Subscription subscription = new Source<>().getObservable().subscribe(new Observer<Object>() {
+    Subscription subscription = new SimulatedSource<>().getObservable().subscribe(new Observer<Object>() {
       @Override
       public void next(Object value) {
       }
@@ -96,38 +94,8 @@ public class IndefiniteObservableTests {
     subscription.unsubscribe();
   }
 
-  private static class Source<T> {
-
-    public T value;
-    private Observer<T> observer;
-
-    public IndefiniteObservable<Observer<T>> getObservable() {
-      return new IndefiniteObservable<>(
-        new IndefiniteObservable.Connector<Observer<T>>() {
-
-          @Nullable
-          @Override
-          public IndefiniteObservable.Disconnector connect(Observer<T> observer) {
-            Source.this.observer = observer;
-
-            return new IndefiniteObservable.Disconnector() {
-              @Override
-              public void disconnect() {
-                Source.this.observer = null;
-              }
-            };
-          }
-        });
-    }
-
-    public void next() {
-      if (observer != null) {
-        observer.next(value);
-      }
-    }
-  }
-
-  private <T> Subscription assertThatNextValuesWillBeEqualTo(Source<T> source, final T expected) {
+  private static <T> Subscription assertThatNextValuesWillBeEqualTo(
+    SimulatedSource<T, Observer<T>> source, final T expected) {
     return source.getObservable().subscribe(new Observer<T>() {
       @Override
       public void next(T value) {
