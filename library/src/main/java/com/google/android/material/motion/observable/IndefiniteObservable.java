@@ -194,7 +194,7 @@ public class IndefiniteObservable<O extends Observer<?>> {
     @Nullable
     private Disconnector disconnector;
 
-    private Subscription(@NonNull Disconnector disconnector) {
+    public Subscription(@NonNull Disconnector disconnector) {
       this.disconnector = disconnector;
     }
 
