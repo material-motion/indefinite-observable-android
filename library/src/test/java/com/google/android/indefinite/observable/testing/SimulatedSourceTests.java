@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.android.material.motion.observable.testing;
+package com.google.android.indefinite.observable.testing;
 
-import com.google.android.material.motion.observable.BuildConfig;
-import com.google.android.material.motion.observable.IndefiniteObservable.Subscription;
-import com.google.android.material.motion.observable.Observer;
+import com.google.android.indefinite.observable.BuildConfig;
+import com.google.android.indefinite.observable.IndefiniteObservable.Subscription;
+import com.google.android.indefinite.observable.Observer;
 
 import org.junit.Before;
 import org.junit.Test;

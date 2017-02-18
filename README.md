@@ -1,11 +1,11 @@
-# Observable implementation for Android
+# Indefinite Observable for Android
 
 [![Build Status](https://travis-ci.org/material-motion/indefinite-observable-android.svg?branch=develop)](https://travis-ci.org/material-motion/indefinite-observable-android)
 [![codecov](https://codecov.io/gh/material-motion/indefinite-observable-android/branch/develop/graph/badge.svg)](https://codecov.io/gh/material-motion/indefinite-observable-android)
 [![Release](https://img.shields.io/github/release/material-motion/indefinite-observable-android.svg)](https://github.com/material-motion/indefinite-observable-android/releases/latest)
 [![Docs](https://img.shields.io/badge/jitpack-docs-green.svg)](https://jitpack.io/com/github/material-motion/indefinite-observable-android/stable-SNAPSHOT/javadoc/)
 
-The Observable implementation for Android repo.
+The Indefinite Observable for Android repo.
 
 Learn more about the APIs defined in the library by reading our
 [technical documentation](https://jitpack.io/com/github/material-motion/indefinite-observable-android/2.0.0/javadoc/) and our

@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.android.material.motion.observable.testing;
+package com.google.android.indefinite.observable.testing;
 
 import android.support.annotation.Nullable;
 
-import com.google.android.material.motion.observable.IndefiniteObservable;
-import com.google.android.material.motion.observable.IndefiniteObservable.Connector;
-import com.google.android.material.motion.observable.IndefiniteObservable.Disconnector;
-import com.google.android.material.motion.observable.Observer;
+import com.google.android.indefinite.observable.IndefiniteObservable;
+import com.google.android.indefinite.observable.IndefiniteObservable.Connector;
+import com.google.android.indefinite.observable.IndefiniteObservable.Disconnector;
+import com.google.android.indefinite.observable.Observer;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;

@@ -15,7 +15,7 @@
   ~ limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.google.android.material.motion.observable.sample">
+  package="com.google.android.indefinite.observable.sample">
 
   <application
     android:allowBackup="true"

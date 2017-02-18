@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.android.material.motion.observable;
+package com.google.android.indefinite.observable;
 
 import android.support.annotation.Nullable;
 
-import com.google.android.material.motion.observable.IndefiniteObservable.Subscription;
-import com.google.android.material.motion.observable.testing.SimulatedSource;
+import com.google.android.indefinite.observable.IndefiniteObservable.Subscription;
+import com.google.android.indefinite.observable.testing.SimulatedSource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

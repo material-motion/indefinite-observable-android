@@ -15,5 +15,5 @@
   ~ limitations under the License.
 -->
 <resources>
-  <string name="app_name">Observable implementation for Android Sample</string>
+  <string name="app_name">Indefinite Observable for Android Sample</string>
 </resources>

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.android.material.motion.observable.sample;
+package com.google.android.indefinite.observable.sample;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,11 +21,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import com.google.android.material.motion.observable.IndefiniteObservable;
-import com.google.android.material.motion.observable.IndefiniteObservable.Connector;
-import com.google.android.material.motion.observable.IndefiniteObservable.Subscription;
-import com.google.android.material.motion.observable.IndefiniteObservable.Disconnector;
-import com.google.android.material.motion.observable.Observer;
+import com.google.android.indefinite.observable.IndefiniteObservable;
+import com.google.android.indefinite.observable.IndefiniteObservable.Connector;
+import com.google.android.indefinite.observable.IndefiniteObservable.Disconnector;
+import com.google.android.indefinite.observable.IndefiniteObservable.Subscription;
+import com.google.android.indefinite.observable.Observer;
 
 /**
  * Observable implementation for Android sample Activity.
